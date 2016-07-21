@@ -3,6 +3,7 @@ package com.caad1229.sample.runtimepermissionsample;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.os.Handler;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
@@ -45,7 +46,17 @@ public class MainActivity extends AppCompatActivity {
         if (requestCode == PERMISSION_REQUEST_CODE && grantResults.length > 0) {
             // 失敗した場合
             if (!RuntimePermissionUtils.checkGrantResults(grantResults)) {
-                Toast.makeText(this, "権限ないです", Toast.LENGTH_SHORT).show();
+                // 「今後は確認しない」にチェックされているかどうか
+                if (RuntimePermissionUtils.shouldShowRequestPermissionRationale(MainActivity.this, PERMISSION_CAMERA[0])) {
+                    Toast.makeText(MainActivity.this, "権限ないです", Toast.LENGTH_SHORT).show();
+                } else {
+                    new Handler().post(new Runnable() {
+                        @Override
+                        public void run() {
+                            RuntimePermissionUtils.showAlertDialog(getSupportFragmentManager(), "カメラ");
+                        }
+                    });
+                }
             } else {
                 // 権限が取れた場合は通常の処理を行う
                 launchCamera();
