@@ -34,4 +34,11 @@ public class RuntimePermissionUtils {
         }
         return true;
     }
+
+    public static boolean shouldShowRequestPermissionRationale(@NonNull Activity activity, @NonNull String permission) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            return activity.shouldShowRequestPermissionRationale(permission);
+        }
+        return true;
+    }
 }
